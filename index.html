@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Ôn thi Lâm nghiệp 12</title>
+<style>
+:root{
+  --bg:#eef6ee; --card:#ffffff; --ink:#1d2b1f; --muted:#5b6e5e;
+  --green:#2e7d32; --green2:#43a047; --leaf:#c8e6c9; --wood:#8d6e63;
+  --red:#d32f2f; --amber:#f9a825; --line:#d7e5d8; --blue:#1565c0;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.5}
+.wrap{max-width:640px;margin:0 auto;padding:12px 14px 90px}
+.card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:14px}
+h1{font-size:22px;margin:0 0 4px;color:var(--green)}
+h2{font-size:19px;margin:0 0 8px;color:var(--green)}
+.sub{color:var(--muted);font-size:14px}
+.hidden{display:none!important}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:12px 18px;font-size:16px;font-weight:600;cursor:pointer;background:var(--green);color:#fff;min-height:46px}
+.btn:active{transform:scale(.97)}
+.btn.sec{background:#e8f1e8;color:var(--green)}
+.btn.warn{background:var(--amber);color:#3b2a00}
+.btn.full{width:100%}
+.btn:disabled{opacity:.45}
+input[type=text]{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-size:16px;margin:6px 0 12px}
+.badge{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-right:6px}
+.b-biet{background:#e3f2fd;color:#1565c0}.b-hieu{background:#fff3e0;color:#e65100}.b-vd{background:#fce4ec;color:#ad1457}
+/* hero */
+.hero{background:linear-gradient(135deg,#2e7d32,#66bb6a);color:#fff;border-radius:18px;padding:18px 16px;margin-bottom:14px}
+.hero h1{color:#fff}
+.hero .sub{color:#e8f5e9}
+ul.info{margin:8px 0 0;padding-left:20px}
+/* claw */
+.target{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin:6px 0 10px}
+.tg{font-size:30px;width:52px;height:52px;border-radius:12px;background:#f1f8e9;border:2px dashed #9ccc65;display:flex;align-items:center;justify-content:center;position:relative}
+.tg.done{background:#c8e6c9;border:2px solid var(--green)}
+.tg.done::after{content:"✓";position:absolute;right:-6px;top:-8px;background:var(--green);color:#fff;font-size:12px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.tg.next{border-color:var(--amber);box-shadow:0 0 0 3px rgba(249,168,37,.3)}
+.arrow{color:var(--muted);font-size:18px}
+.machine{position:relative;height:330px;border-radius:16px;overflow:hidden;
+  background:linear-gradient(#bfe3ff 0%,#e3f4ff 55%,#a5d6a7 55%,#81c784 100%);border:6px solid var(--wood);user-select:none}
+.rail{position:absolute;top:10px;left:0;right:0;height:8px;background:#6d4c41}
+.claw{position:absolute;top:10px;width:0;height:0}
+.rope{position:absolute;left:-2px;top:0;width:4px;background:#555;height:30px}
+.head{position:absolute;left:-22px;width:44px;height:30px;font-size:0}
+.head svg{width:44px;height:34px}
+.held{position:absolute;left:-18px;font-size:34px;width:36px;text-align:center}
+.prize{position:absolute;bottom:14px;font-size:36px;width:44px;margin-left:-22px;text-align:center;transition:opacity .3s}
+.msg{min-height:26px;text-align:center;font-weight:600;margin:10px 0 6px}
+.msg.ok{color:var(--green)}.msg.err{color:var(--red)}
+.ctrl{display:flex;gap:10px}
+.ctrl .btn{flex:1}
+/* quiz */
+.topbar{position:sticky;top:0;z-index:20;background:var(--green);color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-weight:600}
+.timer{background:rgba(255,255,255,.18);padding:4px 10px;border-radius:20px;font-variant-numeric:tabular-nums}
+.timer.low{background:var(--red)}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{flex:1;padding:10px;border-radius:12px;background:#fff;border:2px solid var(--line);font-weight:700;text-align:center;cursor:pointer;font-size:14px}
+.tab.on{border-color:var(--green);background:#e8f5e9;color:var(--green)}
+.qhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.qnum{font-weight:800;color:var(--green)}
+.stem{font-weight:600;margin-bottom:12px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:12px;border:2px solid var(--line);border-radius:12px;margin-bottom:9px;cursor:pointer;background:#fff}
+.opt .L{flex:0 0 30px;height:30px;border-radius:50%;background:#eef3ee;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--green)}
+.opt.sel{border-color:var(--green);background:#f1f8e9}
+.opt.sel .L{background:var(--green);color:#fff}
+.opt.right{border-color:var(--green);background:#e8f5e9}
+.opt.wrong{border-color:var(--red);background:#ffebee}
+.lead{background:#f7faf7;border-left:4px solid var(--green2);padding:10px 12px;border-radius:8px;margin-bottom:12px;font-size:15px}
+.st{border:1.5px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
+.st .t{margin-bottom:8px}
+.tf{display:flex;gap:8px}
+.tf button{flex:1;padding:10px;border-radius:10px;border:2px solid var(--line);background:#fff;font-weight:700;font-size:15px;cursor:pointer}
+.tf button.onT{background:var(--green);border-color:var(--green);color:#fff}
+.tf button.onF{background:var(--red);border-color:var(--red);color:#fff}
+.st.ok{border-color:var(--green);background:#f1f8e9}
+.st.no{border-color:var(--red);background:#fff5f5}
+.nav{display:flex;gap:10px;margin-top:6px}
+.nav .btn{flex:1}
+.pal{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+.pal button{aspect-ratio:1;border-radius:9px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-size:13px;cursor:pointer;padding:0}
+.pal button.ans{background:#c8e6c9;border-color:#81c784}
+.pal button.cur{outline:3px solid var(--amber)}
+.pal button.r{background:#a5d6a7;border-color:var(--green)}
+.pal button.w{background:#ef9a9a;border-color:var(--red)}
+.expl{margin-top:8px;font-size:14px;background:#fffde7;border-radius:8px;padding:8px 10px;color:#5d4037}
+.bottombar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px;z-index:20}
+.bottombar .in{max-width:640px;margin:0 auto}
+.score{font-size:46px;font-weight:800;color:var(--green);text-align:center;line-height:1.1}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.stat{background:#f1f8e9;border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-size:20px;color:var(--green)}
+table.lv{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+table.lv td,table.lv th{border:1px solid var(--line);padding:6px;text-align:center}
+.confetti{position:fixed;top:-20px;font-size:22px;z-index:99;animation:fall 2.2s linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+/* hộp thoại xác nhận */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
+.mbox{background:#fff;border-radius:16px;max-width:420px;width:100%;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.mbox h3{margin:0 0 8px;font-size:18px}
+.mbox .mbody{font-size:15px;margin-bottom:14px}
+.mbox .warnbox{background:#fff3e0;border-left:4px solid var(--amber);padding:8px 10px;border-radius:8px;margin:8px 0;font-size:14px}
+.mbtns{display:flex;gap:10px}.mbtns .btn{flex:1}
+.btn.danger{background:var(--red)}
+.pts{font-size:13px;font-weight:700;padding:2px 8px;border-radius:20px}
+.pts.ok{background:#c8e6c9;color:var(--green)}.pts.no{background:#ffcdd2;color:var(--red)}
+.keygrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px}
+.keygrid div{border-radius:8px;padding:5px 0;text-align:center;font-size:13px;font-weight:700}
+.keygrid .k-ok{background:#c8e6c9;color:#1b5e20}.keygrid .k-no{background:#ffcdd2;color:#b71c1c}
+.err-inline{color:var(--red);font-size:14px;margin:-6px 0 10px;min-height:20px}
+</style>
+</head>
+<body>
+
+<!-- MÀN HÌNH 0: GIỚI THIỆU -->
+<div id="s0" class="wrap">
+  <div class="hero">
+    <h1>🌲 Ôn thi TN THPT – Lâm nghiệp</h1>
+    <div class="sub">Công nghệ 12 · Lâm nghiệp – Thủy sản · Kết nối tri thức với cuộc sống</div>
+  </div>
+  <div class="card">
+    <h2>Cấu trúc bài ôn</h2>
+    <ul class="info">
+      <li><b>Phần 1:</b> Giải mã captcha bằng game gắp thú.</li>
+      <li><b>Phần 2:</b> 24 câu trắc nghiệm nhiều lựa chọn (5 Biết · 10 Hiểu · 9 Vận dụng) – 6,0 điểm.</li>
+      <li><b>Phần 3:</b> 4 câu Đúng/Sai, mỗi câu 4 ý a, b, c, d – 4,0 điểm.</li>
+      <li>Thời gian làm Phần 2 + 3: <b>50 phút</b>.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <label>Họ và tên</label>
+    <input id="hoten" type="text" placeholder="VD: Nguyễn Văn A" autocomplete="off">
+    <label>Lớp</label>
+    <input id="lop" type="text" placeholder="VD: 12A1" autocomplete="off">
+    <div class="err-inline" id="nameErr"></div>
+    <button class="btn full" onclick="goCaptcha()">Bắt đầu ▶</button>
+  </div>
+</div>
+
+<!-- MÀN HÌNH 1: CAPTCHA GẮP THÚ -->
+<div id="s1" class="wrap hidden">
+  <div class="card">
+    <h2>Phần 1 · Giải mã captcha 🧸</h2>
+    <div class="sub">Bấm <b>GẮP</b> khi móc đứng ngay trên món đồ. Gắp <b>đúng thứ tự</b> mã bên dưới để mở khóa bài thi.</div>
+    <div class="target" id="target"></div>
+    <div class="machine" id="machine">
+      <div class="rail"></div>
+      <div class="claw" id="claw">
+        <div class="rope" id="rope"></div>
+        <div class="head" id="head">
+          <svg viewBox="0 0 44 34"><rect x="14" y="0" width="16" height="10" rx="3" fill="#455a64"/>
+            <path d="M16 9 L6 26 L12 30" stroke="#607d8b" stroke-width="4" fill="none" stroke-linecap="round" id="clL"/>
+            <path d="M28 9 L38 26 L32 30" stroke="#607d8b" stroke-width="4" fill="none" stroke-linecap="round" id="clR"/></svg>
+        </div>
+        <div class="held" id="held"></div>
+      </div>
+    </div>
+    <div class="msg" id="cmsg"></div>
+    <div class="ctrl">
+      <button class="btn sec" onclick="newCaptcha()">🔄 Đổi mã</button>
+      <button class="btn warn" id="grabBtn" onclick="grab()">🎯 GẮP</button>
+    </div>
+    <button class="btn full hidden" id="unlockBtn" style="margin-top:12px" onclick="startQuiz()">🔓 Đã giải mã – Vào làm bài</button>
+  </div>
+</div>
+
+<!-- MÀN HÌNH 2: LÀM BÀI -->
+<div id="s2" class="hidden">
+  <div class="topbar"><span id="who">Bài làm</span><span class="timer" id="timer">50:00</span></div>
+  <div class="wrap">
+    <div class="tabs">
+      <div class="tab on" id="tab2" onclick="showPart(2)">Phần 2 · Trắc nghiệm</div>
+      <div class="tab" id="tab3" onclick="showPart(3)">Phần 3 · Đúng/Sai</div>
+    </div>
+    <div class="card" id="qbox"></div>
+    <div class="card">
+      <div class="sub" style="margin-bottom:8px">Bảng câu hỏi (ô xanh = đã làm)</div>
+      <div class="pal" id="pal"></div>
+    </div>
+  </div>
+  <div class="bottombar"><div class="in"><button class="btn full" id="submitBtn" onclick="submitExam()">📤 Nộp bài</button></div></div>
+</div>
+
+<!-- MÀN HÌNH 3: KẾT QUẢ -->
+<div id="s3" class="wrap hidden">
+  <div class="card" id="result"></div>
+  <div class="tabs">
+    <div class="tab on" id="rtab2" onclick="showReview(2)">Xem lại Phần 2</div>
+    <div class="tab" id="rtab3" onclick="showReview(3)">Xem lại Phần 3</div>
+  </div>
+  <div id="review"></div>
+  <button class="btn full" onclick="location.reload()">🔁 Làm lại từ đầu</button>
+</div>
+
+<!-- HỘP THOẠI -->
+<div class="modal hidden" id="modal"><div class="mbox">
+  <h3 id="mTitle"></h3><div class="mbody" id="mBody"></div>
+  <div class="mbtns" id="mBtns"></div>
+</div></div>
+
+<script>
+/* =================== NGÂN HÀNG CÂU HỎI =================== */
+const MCQ = [
+/* ---- BIẾT (5) ---- */
+{lv:"biet",q:"Theo Luật Lâm nghiệp năm 2017, căn cứ vào mục đích sử dụng chủ yếu, rừng được phân thành ba loại nào?",
+ o:["Rừng đặc dụng, rừng phòng hộ, rừng sản xuất","Rừng nguyên sinh, rừng thứ sinh, rừng trồng mới","Rừng lá rộng, rừng lá kim, rừng hỗn giao tre nứa","Rừng núi đất, rừng núi đá, rừng ngập nước ven biển"],a:0,
+ e:"Theo mục đích sử dụng chủ yếu, rừng gồm 3 loại: đặc dụng, phòng hộ và sản xuất."},
+{lv:"biet",q:"Trình tự các giai đoạn sinh trưởng, phát triển của cây rừng là",
+ o:["non → gần thành thục → thành thục → già cỗi","non → thành thục → gần thành thục → già cỗi","gần thành thục → non → thành thục → già cỗi","non → già cỗi → gần thành thục → thành thục"],a:0,
+ e:"Cây rừng trải qua 4 giai đoạn: non, gần thành thục, thành thục, già cỗi."},
+{lv:"biet",q:"Phương thức chặt toàn bộ cây rừng trong một lần ở một khu vực nhất định được gọi là",
+ o:["khai thác trắng","khai thác dần","khai thác chọn","khai thác tỉa thưa"],a:0,
+ e:"Khai thác trắng là chặt hết cây rừng trong một lần, sau đó phục hồi bằng trồng rừng."},
+{lv:"biet",q:"Hoạt động nào sau đây KHÔNG thuộc nhóm hoạt động lâm nghiệp cơ bản?",
+ o:["Quản lí và bảo vệ tài nguyên rừng","Trồng rừng, chăm sóc và tái sinh rừng","Khai thác, chế biến và tiêu thụ lâm sản","Đánh bắt và chế biến hải sản xa bờ"],a:3,
+ e:"Đánh bắt hải sản thuộc lĩnh vực thủy sản, không phải hoạt động lâm nghiệp."},
+{lv:"biet",q:"Rừng phòng hộ được sử dụng chủ yếu nhằm mục đích nào sau đây?",
+ o:["Bảo vệ nguồn nước, đất, chống xói mòn, chắn gió, chắn sóng","Bảo tồn hệ sinh thái tự nhiên và nguồn gene sinh vật rừng","Sản xuất, kinh doanh gỗ và các loại lâm sản ngoài gỗ","Phục vụ nghiên cứu khoa học và lưu giữ giống cây rừng"],a:0,
+ e:"Rừng phòng hộ: đầu nguồn, chắn gió cát, chắn sóng lấn biển, bảo vệ nguồn nước và đất."},
+/* ---- HIỂU (10) ---- */
+{lv:"hieu",q:"Vai trò nào của rừng góp phần trực tiếp làm giảm nhẹ biến đổi khí hậu?",
+ o:["Hấp thụ khí CO₂ và giải phóng O₂ qua quá trình quang hợp","Cung cấp gỗ làm nguyên liệu cho ngành công nghiệp giấy","Tạo việc làm và thu nhập cho đồng bào ở vùng miền núi","Cung cấp nguồn dược liệu quý phục vụ cho ngành y dược"],a:0,
+ e:"Rừng hấp thụ CO₂ (khí nhà kính chính), nhờ đó giảm nhẹ biến đổi khí hậu."},
+{lv:"hieu",q:"Đặc điểm nào sau đây đúng với giai đoạn gần thành thục của cây rừng?",
+ o:["Sinh trưởng nhanh về chiều cao, cây giao tán, tỉa cành tự nhiên mạnh","Sinh trưởng chậm, tán thưa, cây dễ bị sâu bệnh và đổ gãy khi có gió","Cây ra hoa quả ổn định, khả năng chống chịu với ngoại cảnh cao nhất","Cây còn nhỏ, chống chịu kém, cần che bóng và làm cỏ thường xuyên"],a:0,
+ e:"Giai đoạn gần thành thục: tăng nhanh chiều cao, rừng khép tán, cành dưới tự rụng."},
+{lv:"hieu",q:"Vì sao cần làm cỏ, xới đất, vun gốc cho rừng trồng trong những năm đầu sau khi trồng?",
+ o:["Giảm cạnh tranh dinh dưỡng, ánh sáng và giúp đất tơi xốp, giữ ẩm","Tăng số cây trên đơn vị diện tích để rừng nhanh chóng khép tán","Thúc đẩy cây ra hoa kết quả sớm để thu hái hạt giống trồng rừng","Loại bỏ hoàn toàn nguy cơ cháy rừng trong suốt mùa khô hằng năm"],a:0,
+ e:"Cỏ dại tranh nước, dinh dưỡng, ánh sáng; xới vun giúp đất thoáng, giữ ẩm, rễ phát triển."},
+{lv:"hieu",q:"Điểm khác nhau cơ bản giữa khai thác dần và khai thác trắng là khai thác dần",
+ o:["chặt cây trong nhiều lần và rừng được phục hồi bằng tái sinh tự nhiên","chặt toàn bộ cây trong một lần rồi phục hồi rừng bằng trồng mới","chỉ chặt cây già, cây sâu bệnh và giữ lại cây non, cây mẹ gieo giống","chỉ được áp dụng đối với rừng đặc dụng và rừng phòng hộ đầu nguồn"],a:0,
+ e:"Khai thác dần chặt 3–4 lần trong nhiều năm, rừng tự tái sinh; khai thác trắng chặt 1 lần rồi trồng lại."},
+{lv:"hieu",q:"Khi trồng rừng bằng cây con có bầu, cần rạch bỏ vỏ bầu trước khi đặt cây vào hố nhằm",
+ o:["giúp rễ cây phát triển thuận lợi, đâm sâu và lan rộng ra đất","giảm khối lượng bầu để vận chuyển cây con lên đồi dễ hơn","tái sử dụng vỏ bầu cho các đợt gieo ươm cây con tiếp theo","ngăn sâu bệnh từ đất xâm nhập vào bộ rễ của cây mới trồng"],a:0,
+ e:"Vỏ bầu (túi nilon) cản rễ; bỏ vỏ để rễ tiếp xúc trực tiếp với đất."},
+{lv:"hieu",q:"Việc chuyển đổi đất rừng tự nhiên sang trồng cây công nghiệp làm suy thoái tài nguyên rừng chủ yếu vì",
+ o:["làm mất diện tích rừng và phá vỡ cấu trúc hệ sinh thái rừng","làm tăng độ che phủ nhưng giảm sản lượng gỗ khai thác hằng năm","làm đất rừng màu mỡ hơn nên cây rừng tự nhiên khó tái sinh","làm tăng số lượng loài động vật hoang dã sinh sống trong rừng"],a:0,
+ e:"Chuyển đổi mục đích sử dụng đất làm mất rừng, mất nơi sống của sinh vật, giảm đa dạng sinh học."},
+{lv:"hieu",q:"Thời vụ trồng rừng chính ở các tỉnh phía Nam nước ta thường vào",
+ o:["mùa mưa, khi đất đủ ẩm giúp cây con dễ bén rễ","mùa khô, khi trời nắng giúp cây quang hợp mạnh","mùa xuân, khi nhiệt độ thấp và có mưa phùn nhẹ","cuối năm, khi cây ngừng sinh trưởng, ít thoát nước"],a:0,
+ e:"Miền Bắc trồng vào mùa xuân, mùa thu; miền Nam trồng vào mùa mưa."},
+{lv:"hieu",q:"Biện pháp làm đường băng cản lửa trong công tác bảo vệ rừng có tác dụng chủ yếu là",
+ o:["ngăn đám cháy lan rộng sang các khu rừng lân cận","giúp xe chở gỗ khai thác vận chuyển thuận lợi hơn","tăng ánh sáng cho cây non tái sinh dưới tán rừng","hạn chế người dân vào rừng săn bắt thú hoang dã"],a:0,
+ e:"Đường băng cản lửa là dải đất trống không có vật liệu cháy, chặn lửa lan."},
+{lv:"hieu",q:"Vì sao một số loài cây gỗ chịu bóng (như lim, giổi) ở giai đoạn non cần được che bóng khi trồng?",
+ o:["Vì giai đoạn non cây ưa bóng, nắng gắt dễ làm cây héo và chết","Vì che bóng giúp cây ra hoa sớm và tạo nhiều hạt giống tốt hơn","Vì ánh sáng mạnh làm đất rừng nghèo dinh dưỡng và bị xói mòn","Vì che bóng làm tăng nhiệt độ đất, kích thích bộ rễ phát triển"],a:0,
+ e:"Ánh sáng là nhân tố sinh thái quan trọng; cây chịu bóng lúc nhỏ cần che bóng để sống."},
+{lv:"hieu",q:"Yêu cầu quan trọng nhất của khai thác rừng bền vững là",
+ o:["không khai thác vượt quá khả năng tái sinh, phục hồi của rừng","khai thác tối đa sản lượng gỗ để đáp ứng nhu cầu xuất khẩu","ưu tiên khai thác trắng ở rừng tự nhiên để trồng rừng mới","khai thác cây non, cây nhỏ để giữ lại cây gỗ lớn làm giống"],a:0,
+ e:"Bền vững nghĩa là lượng khai thác không vượt quá lượng rừng tăng trưởng, tái sinh."},
+/* ---- VẬN DỤNG (9) ---- */
+{lv:"vd",q:"Một xã ven biển ở Đồng bằng sông Cửu Long thường xuyên bị sóng biển gây sạt lở bờ. Loại rừng nào nên được ưu tiên phát triển?",
+ o:["Rừng phòng hộ chắn sóng, lấn biển với cây đước, mắm, bần","Rừng sản xuất trồng keo lai lấy gỗ làm nguyên liệu giấy","Rừng đặc dụng phục vụ nghiên cứu khoa học thực nghiệm","Rừng phòng hộ đầu nguồn trồng thông và bạch đàn trên đồi"],a:0,
+ e:"Rừng ngập mặn ven biển (đước, mắm, bần) là rừng phòng hộ chắn sóng, giữ bờ."},
+{lv:"vd",q:"Gia đình ông A có 2 ha rừng keo trồng đã 6 năm tuổi, đến tuổi khai thác, đất dốc nhẹ. Ông muốn trồng lại ngay chu kì sau. Phương thức khai thác phù hợp là",
+ o:["khai thác trắng, sau đó trồng lại rừng bằng cây con có bầu","khai thác dần trong 10 năm để rừng tự tái sinh bằng hạt","khai thác chọn, chỉ chặt những cây keo cong queo, sâu bệnh","không khai thác mà khoanh nuôi thành rừng đặc dụng lâu dài"],a:0,
+ e:"Rừng trồng thuần loài, cùng tuổi, đất dốc nhẹ: khai thác trắng rồi trồng lại là hợp lí."},
+{lv:"vd",q:"Một khu rừng tự nhiên lá rộng nhiều tầng ở vùng đầu nguồn, dưới tán có nhiều cây non tái sinh. Nếu được phép khai thác một phần gỗ thì nên chọn phương thức nào?",
+ o:["Khai thác chọn, chặt cây già, cây kém phẩm chất, giữ cây non","Khai thác trắng toàn bộ rồi trồng lại bằng loài cây mọc nhanh","Khai thác dần, chặt hết trong hai lần cách nhau một mùa mưa","Khai thác trắng theo băng rộng để dễ vận chuyển gỗ ra ngoài"],a:0,
+ e:"Rừng tự nhiên đầu nguồn cần giữ chức năng phòng hộ: chỉ khai thác chọn, giữ cây non tái sinh."},
+{lv:"vd",q:"Mùa khô kéo dài, nguy cơ cháy rừng tràm ở vùng U Minh rất cao. Biện pháp nào cần ưu tiên thực hiện?",
+ o:["Trữ nước trong kênh mương, tăng tuần tra, cấm dùng lửa trong rừng","Phun thuốc trừ sâu trên diện rộng để diệt côn trùng gây hại rừng","Chặt bớt cây tràm già để bán gỗ, giảm mật độ cây trong khu rừng","Cho người dân vào rừng đốt sạch lớp lá khô dưới tán vào buổi trưa"],a:0,
+ e:"Rừng tràm trên đất than bùn: giữ nước cao, tuần tra, quản lí lửa là biện pháp then chốt."},
+{lv:"vd",q:"Rừng thông của bà B mới trồng được 1 năm, nhiều chỗ cây bị chết do nắng hạn nên mật độ không đủ. Bà B nên làm gì?",
+ o:["Trồng dặm vào chỗ cây chết bằng cây con cùng loài, khỏe mạnh","Tỉa thưa bớt cây để những cây còn lại có thêm chỗ phát triển","Khai thác trắng toàn bộ diện tích và chuyển sang trồng cây ăn quả","Bón vôi trên toàn bộ diện tích để cải tạo độ pH cho đất trồng rừng"],a:0,
+ e:"Trồng dặm giúp đảm bảo mật độ rừng trồng, thực hiện trong 1–2 năm đầu."},
+{lv:"vd",q:"Rừng keo 4 năm tuổi đã khép tán, cây cạnh tranh ánh sáng mạnh, nhiều cây cong queo, yếu ớt. Biện pháp kĩ thuật phù hợp là",
+ o:["tỉa thưa, loại bỏ cây cong queo, sâu bệnh để giảm mật độ rừng","trồng dặm thêm cây con để tăng mật độ và độ che phủ của rừng","bón thật nhiều phân đạm để tất cả các cây sinh trưởng như nhau","phát quang toàn bộ thực vật dưới tán và đốt bỏ hết lá rụng"],a:0,
+ e:"Khi rừng khép tán, tỉa thưa giúp cây còn lại đủ ánh sáng, dinh dưỡng, tăng chất lượng gỗ."},
+{lv:"vd",q:"Một hộ dân nhận khoán bảo vệ rừng phòng hộ muốn tăng thu nhập nhưng không được khai thác gỗ. Hướng làm phù hợp là",
+ o:["trồng cây dược liệu dưới tán, nuôi ong lấy mật theo đúng quy định","chặt bớt cây gỗ lớn để bán, sau đó trồng lại bằng cây keo lai","đốt một phần rừng lấy đất làm nương rẫy trồng sắn, trồng ngô","săn bắt động vật hoang dã trong rừng để bán cho các nhà hàng"],a:0,
+ e:"Phát triển lâm sản ngoài gỗ dưới tán giúp tăng thu nhập mà vẫn giữ rừng."},
+{lv:"vd",q:"Một học sinh phát hiện có người lén chặt cây trong khu rừng phòng hộ gần nhà. Cách ứng xử phù hợp nhất là",
+ o:["báo ngay cho kiểm lâm hoặc chính quyền địa phương để xử lí","im lặng vì bảo vệ rừng chỉ là trách nhiệm của lực lượng kiểm lâm","tự mình ngăn cản bằng mọi cách, kể cả dùng vũ lực với người đó","đăng ảnh lên mạng kèm thông tin cá nhân của người chặt cây đó"],a:0,
+ e:"Bảo vệ rừng là trách nhiệm của mọi người; cần báo cơ quan chức năng, không tự xử lí."},
+{lv:"vd",q:"Một vùng đồi bị xói mòn, mặt đất còn nhiều cây bụi và một số gốc cây gỗ có khả năng tái sinh chồi. Giải pháp phục hồi rừng tiết kiệm và hiệu quả là",
+ o:["khoanh nuôi xúc tiến tái sinh tự nhiên, kết hợp trồng bổ sung","phát dọn sạch thực bì, cày toàn diện rồi trồng cây nông nghiệp","khai thác hết cây bụi để bán củi, để đất trống tự phục hồi","trồng thuần một loài cây ngoại lai, mật độ thật cao trên đất dốc"],a:0,
+ e:"Nơi còn khả năng tái sinh, khoanh nuôi xúc tiến tái sinh là biện pháp rẻ, hiệu quả."}
+];
+
+const TF = [
+{lead:"Vườn quốc gia Tràm Chim (Đồng Tháp) là vùng đất ngập nước có rừng tràm, là nơi cư trú của nhiều loài chim quý, trong đó có sếu đầu đỏ.",
+ s:[
+  {t:"Vườn quốc gia Tràm Chim thuộc loại rừng đặc dụng.",a:true,e:"Vườn quốc gia là một dạng rừng đặc dụng."},
+  {t:"Mục đích chủ yếu của rừng đặc dụng là khai thác gỗ tràm để phục vụ xây dựng.",a:false,e:"Rừng đặc dụng chủ yếu để bảo tồn hệ sinh thái, nguồn gene, nghiên cứu khoa học."},
+  {t:"Ban quản lí có thể phát triển du lịch sinh thái để tăng nguồn thu, miễn là không ảnh hưởng đến mục tiêu bảo tồn.",a:true,e:"Du lịch sinh thái có kiểm soát là hướng sử dụng hợp lí rừng đặc dụng."},
+  {t:"Để mở rộng nơi kiếm ăn cho sếu, có thể cho người dân chuyển một phần rừng tràm sang trồng lúa.",a:false,e:"Chuyển đổi rừng làm mất sinh cảnh, trái mục tiêu bảo tồn."}
+ ]},
+{lead:"Ông C ở một xã miền núi trồng 1 ha keo lai bằng cây con có bầu. Sau 1 năm, một số cây bị chết, cỏ dại mọc um tùm che lấp cây keo.",
+ s:[
+  {t:"Rừng trồng cần được chăm sóc liên tục trong khoảng 3–4 năm đầu sau khi trồng.",a:true,e:"Rừng trồng thường được chăm sóc 3–4 năm đầu đến khi khép tán."},
+  {t:"Cỏ dại mọc um tùm làm cây keo thiếu ánh sáng, nước và dinh dưỡng nên sinh trưởng kém.",a:true,e:"Cỏ dại cạnh tranh các yếu tố sống với cây trồng."},
+  {t:"Ông C nên trồng dặm vào chỗ cây chết, đồng thời làm cỏ, xới đất và vun gốc cho cây.",a:true,e:"Đây là các biện pháp chăm sóc phù hợp ở năm thứ nhất."},
+  {t:"Biện pháp tốt nhất là phun thuốc diệt cỏ liều cao nhiều lần trên toàn bộ diện tích rừng.",a:false,e:"Lạm dụng thuốc gây hại cây trồng, đất và môi trường."}
+ ]},
+{lead:"Vào mùa khô, nhiều vụ cháy rừng xảy ra do người dân đốt nương rẫy, đốt ong lấy mật hoặc dùng lửa bất cẩn trong rừng.",
+ s:[
+  {t:"Cháy rừng là một trong những nguyên nhân gây suy thoái tài nguyên rừng.",a:true,e:"Cháy rừng làm mất rừng, suy giảm đa dạng sinh học."},
+  {t:"Cháy rừng chủ yếu xảy ra vào mùa mưa vì khi đó sấm sét xuất hiện nhiều.",a:false,e:"Mùa khô độ ẩm thấp, vật liệu cháy khô nên dễ cháy hơn."},
+  {t:"Khi thấy đám cháy nhỏ, cần báo ngay cho lực lượng chức năng và chỉ tham gia dập lửa khi đảm bảo an toàn.",a:true,e:"Báo tin kịp thời, chữa cháy ban đầu an toàn là đúng quy định."},
+  {t:"Để phòng cháy, nên đốt toàn bộ thực bì dưới tán rừng vào lúc nắng nóng nhất trong ngày.",a:false,e:"Đốt lúc nắng nóng rất dễ gây cháy lan; đốt có kiểm soát phải đúng thời điểm, có người canh giữ."}
+ ]},
+{lead:"Khu rừng tự nhiên X đã bị khai thác kiệt nhiều năm trước, nay chỉ còn cây bụi và một số cây gỗ tái sinh rải rác. Khu rừng trồng bạch đàn Y đã 7 năm tuổi, đến tuổi khai thác.",
+ s:[
+  {t:"Khai thác chọn là chặt những cây đáp ứng mục đích sử dụng, giữ lại cây non, cây có khả năng gieo giống.",a:true,e:"Đúng khái niệm khai thác chọn."},
+  {t:"Khai thác trắng trên đồi có độ dốc lớn dễ gây xói mòn, rửa trôi đất.",a:true,e:"Mất lớp thực vật che phủ, đất dốc dễ bị xói mòn."},
+  {t:"Đối với khu X, nên khai thác trắng nốt số cây còn lại rồi trồng rừng mới.",a:false,e:"Khu X cần khoanh nuôi, xúc tiến tái sinh để phục hồi rừng."},
+  {t:"Đối với khu Y, có thể khai thác trắng rồi trồng lại rừng ngay trong thời vụ thích hợp.",a:true,e:"Rừng trồng đến tuổi khai thác, khai thác trắng rồi trồng lại là phù hợp."}
+ ]}
+];
+const LVNAME={biet:"Biết",hieu:"Hiểu",vd:"Vận dụng"};
+const LVCLS={biet:"b-biet",hieu:"b-hieu",vd:"b-vd"};
+const TFLV=["biet","hieu","vd","vd"];
+
+/* =================== TIỆN ÍCH =================== */
+const $=id=>document.getElementById(id);
+function show(id){["s0","s1","s2","s3"].forEach(s=>$(s).classList.toggle("hidden",s!==id));window.scrollTo(0,0)}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+let student={name:"",cls:""};
+function goCaptcha(){
+  student.name=$("hoten").value.trim(); student.cls=$("lop").value.trim();
+  if(!student.name){$("nameErr").textContent="Em nhập họ và tên trước nhé!";$("hoten").focus();return}
+  $("nameErr").textContent="";
+  show("s1"); newCaptcha(); startClaw();
+}
+
+/* =================== PHẦN 1: GẮP THÚ =================== */
+const POOL=["🌲","🦌","🐿️","🦉","🍄","🐻","🦋","🐝","🌰","🐒"];
+let prizes=[],code=[],step=0,clawX=50,dir=1,busy=false,speed=0.45,raf=null,solved=false;
+
+function newCaptcha(){
+  if(busy)return;
+  solved=false; step=0; $("unlockBtn").classList.add("hidden"); $("grabBtn").disabled=false;
+  const items=shuffle(POOL).slice(0,8);
+  code=shuffle(items).slice(0,3);
+  const slots=shuffle([10,21,32,43,54,65,76,87]);
+  prizes=items.map((e,i)=>({e,x:slots[i],alive:true}));
+  renderMachine(); renderTarget(); msg("Gắp theo thứ tự từ trái sang phải của mã.","");
+}
+function renderTarget(){
+  $("target").innerHTML=code.map((c,i)=>(i?'<span class="arrow">→</span>':'')+
+    `<div class="tg ${i<step?'done':''} ${i===step&&!solved?'next':''}">${c}</div>`).join("");
+}
+function renderMachine(){
+  const m=$("machine");
+  m.querySelectorAll(".prize").forEach(p=>p.remove());
+  prizes.forEach((p,i)=>{ if(!p.alive)return;
+    const d=document.createElement("div");d.className="prize";d.id="pz"+i;d.textContent=p.e;d.style.left=p.x+"%";m.appendChild(d)});
+}
+function msg(t,c){const m=$("cmsg");m.textContent=t;m.className="msg "+(c||"")}
+function setRope(h,anim){
+  const r=$("rope"),hd=$("head"),hl=$("held");
+  [r,hd,hl].forEach(el=>el.style.transition=anim?`all ${anim}ms ease-in-out`:"none");
+  r.style.height=h+"px"; hd.style.top=h+"px"; hl.style.top=(h+22)+"px";
+}
+function clawOpen(o){
+  $("clL").setAttribute("d",o?"M16 9 L4 24 L8 30":"M16 9 L12 24 L18 30");
+  $("clR").setAttribute("d",o?"M28 9 L40 24 L36 30":"M28 9 L32 24 L26 30");
+}
+function startClaw(){
+  setRope(30,0); clawOpen(true);
+  cancelAnimationFrame(raf);
+  const loop=()=>{
+    if(!busy){clawX+=dir*speed; if(clawX>92){clawX=92;dir=-1} if(clawX<8){clawX=8;dir=1}}
+    $("claw").style.left=clawX+"%";
+    raf=requestAnimationFrame(loop)};
+  loop();
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+async function grab(){
+  if(busy||solved)return;
+  busy=true; $("grabBtn").disabled=true; msg("Đang gắp...","");
+  const H=$("machine").clientHeight;
+  const drop=H-10-30-62;
+  clawOpen(true); setRope(drop,700); await sleep(750);
+  clawOpen(false); await sleep(250);
+  let hit=-1,best=99;
+  prizes.forEach((p,i)=>{ if(p.alive){const d=Math.abs(p.x-clawX); if(d<5.5&&d<best){best=d;hit=i}} });
+  let slip = hit>=0 && best>3.5 && Math.random()<0.5;
+  if(hit>=0 && !slip){
+    $("pz"+hit).style.opacity=0; $("held").textContent=prizes[hit].e;
+  }
+  setRope(30,700); await sleep(800);
+  if(hit<0){msg("Hụt rồi! Canh cho móc đứng ngay trên món đồ nhé.","err")}
+  else if(slip){msg("Ôi, tuột tay! Thử lại nào 😅","err")}
+  else{
+    const got=prizes[hit].e;
+    if(got===code[step]){
+      prizes[hit].alive=false; step++; renderTarget();
+      if(step===code.length){solved=true; msg("🎉 Giải mã thành công! Mời em vào làm bài.","ok");
+        $("unlockBtn").classList.remove("hidden"); confetti(); renderTarget();}
+      else msg("Chính xác! Tiếp tục gắp "+code[step],"ok");
+    }else{
+      $("pz"+hit).style.opacity=1;
+      msg("Sai thứ tự! Cần gắp "+code[step]+" – thả "+got+" lại máy.","err");
+    }
+  }
+  await sleep(300); $("held").textContent=""; clawOpen(true);
+  busy=false; if(!solved)$("grabBtn").disabled=false;
+}
+function confetti(){
+  const ems=["🌲","🍃","🎉","⭐","🌿"];
+  for(let i=0;i<24;i++){const c=document.createElement("div");c.className="confetti";
+    c.textContent=ems[i%ems.length];c.style.left=Math.random()*100+"vw";c.style.animationDelay=(Math.random()*0.8)+"s";
+    document.body.appendChild(c);setTimeout(()=>c.remove(),3200)}
+}
+
+/* =================== PHẦN 2 & 3: LÀM BÀI =================== */
+let exam2=[],exam3=[],ans2=[],ans3=[],part=2,idx=0,timeLeft=50*60,tick=null,submitted=false;
+function startQuiz(){
+  cancelAnimationFrame(raf);
+  // Giữ thứ tự mức độ Biết → Hiểu → Vận dụng; xáo trộn đáp án trong mỗi câu
+  exam2=MCQ.map(q=>{const ord=shuffle([0,1,2,3]);return{...q,o:ord.map(k=>q.o[k]),a:ord.indexOf(q.a)}});
+  exam3=TF; ans2=Array(24).fill(null); ans3=TF.map(()=>[null,null,null,null]);
+  $("who").textContent=(student.name+(student.cls?" · "+student.cls:"")).slice(0,32);
+  show("s2"); part=2; idx=0; render();
+  tick=setInterval(()=>{timeLeft--; drawTime(); if(timeLeft<=0){clearInterval(tick);timeLeft=0;drawTime();finish();
+    openModal("⏰ Hết giờ làm bài","Hệ thống đã tự động nộp bài. Mời em xem kết quả.",[{t:"Xem kết quả",c:"",f:closeModal}])}},1000);
+  drawTime();
+}
+function drawTime(){const m=Math.floor(timeLeft/60),s=timeLeft%60;$("timer").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");$("timer").classList.toggle("low",timeLeft<=300)}
+function showPart(p){part=p;idx=0;render()}
+function render(){
+  $("tab2").classList.toggle("on",part===2);$("tab3").classList.toggle("on",part===3);
+  const box=$("qbox"); const L="ABCD";
+  if(part===2){
+    const q=exam2[idx];
+    box.innerHTML=`<div class="qhead"><span class="qnum">Câu ${idx+1}/24</span><span class="badge ${LVCLS[q.lv]}">${LVNAME[q.lv]}</span></div>
+      <div class="stem">${esc(q.q)}</div>`+
+      q.o.map((o,i)=>`<div class="opt ${ans2[idx]===i?'sel':''}" onclick="pick(${i})"><span class="L">${L[i]}</span><span>${esc(o)}</span></div>`).join("")+
+      navHtml(24);
+  }else{
+    const q=exam3[idx];
+    box.innerHTML=`<div class="qhead"><span class="qnum">Câu ${idx+1}/4</span><span class="sub">Chọn Đúng hoặc Sai</span></div>
+      <div class="lead">${esc(q.lead)}</div>`+
+      q.s.map((s,i)=>{const v=ans3[idx][i];return `<div class="st"><div class="t"><b>${"abcd"[i]})</b> <span class="badge ${LVCLS[TFLV[i]]}">${LVNAME[TFLV[i]]}</span>${esc(s.t)}</div>
+        <div class="tf"><button class="${v===true?'onT':''}" onclick="pickTF(${i},true)">✔ Đúng</button><button class="${v===false?'onF':''}" onclick="pickTF(${i},false)">✘ Sai</button></div></div>`}).join("")+
+      navHtml(4);
+  }
+  renderPal();
+}
+function navHtml(n){
+  const last=idx===n-1;
+  return `<div class="nav"><button class="btn sec" ${idx===0&&part===2?'disabled':''} onclick="prev()">◀ Trước</button>
+    <button class="btn" onclick="next()">${last&&part===2?'Sang Phần 3 ▶':(last?'Nộp bài 📤':'Tiếp ▶')}</button></div>`;
+}
+function prev(){if(idx>0)idx--;else if(part===3){part=2;idx=23}render();window.scrollTo(0,0)}
+function next(){const n=part===2?24:4; if(idx<n-1)idx++; else if(part===2){part=3;idx=0} else {submitExam();return} render();window.scrollTo(0,0)}
+function pick(i){ans2[idx]=i;render()}
+function pickTF(i,v){ans3[idx][i]=v;render()}
+function renderPal(){
+  const n=part===2?24:4;let h="";
+  for(let i=0;i<n;i++){const done=part===2?ans2[i]!==null:ans3[i].every(x=>x!==null);
+    h+=`<button class="${done?'ans':''} ${i===idx?'cur':''}" onclick="idx=${i};render()">${i+1}</button>`}
+  $("pal").style.gridTemplateColumns=part===2?"repeat(8,1fr)":"repeat(4,1fr)";
+  $("pal").innerHTML=h;
+}
+function openModal(title,body,btns){
+  $("mTitle").innerHTML=title;$("mBody").innerHTML=body;
+  $("mBtns").innerHTML="";
+  btns.forEach(b=>{const e=document.createElement("button");e.className="btn "+(b.c||"");e.textContent=b.t;e.onclick=b.f;$("mBtns").appendChild(e)});
+  $("modal").classList.remove("hidden");
+}
+function closeModal(){$("modal").classList.add("hidden")}
+function submitExam(){
+  if(submitted)return;
+  const miss2=[];ans2.forEach((x,i)=>{if(x===null)miss2.push(i+1)});
+  const miss3=[];ans3.forEach((r,i)=>r.forEach((x,j)=>{if(x===null)miss3.push((i+1)+"abcd"[j])}));
+  if(miss2.length||miss3.length){
+    let b=`<div>Em <b>chưa làm xong</b> bài:</div>`;
+    if(miss2.length)b+=`<div class="warnbox">Phần 2 còn <b>${miss2.length} câu</b> chưa chọn: ${miss2.join(", ")}</div>`;
+    if(miss3.length)b+=`<div class="warnbox">Phần 3 còn <b>${miss3.length} ý</b> chưa chọn: ${miss3.join(", ")}</div>`;
+    b+=`<div>Câu, ý bỏ trống sẽ <b>không được tính điểm</b>. Em có đồng ý nộp bài không?</div>`;
+    openModal("⚠️ Cảnh báo: bài làm chưa hoàn thành",b,[
+      {t:"✏️ Làm tiếp",c:"sec",f:()=>{closeModal();
+        if(miss2.length){part=2;idx=miss2[0]-1}else{part=3;idx=parseInt(miss3[0])-1}render();window.scrollTo(0,0)}},
+      {t:"Đồng ý nộp",c:"danger",f:()=>{closeModal();finish()}}]);
+  }else{
+    openModal("📤 Xác nhận nộp bài","Em đã làm đủ tất cả câu hỏi. Sau khi nộp sẽ không sửa được nữa. Em chắc chắn nộp bài?",[
+      {t:"Kiểm tra lại",c:"sec",f:closeModal},
+      {t:"Đồng ý nộp",c:"",f:()=>{closeModal();finish()}}]);
+  }
+}
+function tfPoint(k){return [0,0.1,0.25,0.5,1][k]}
+function finish(){
+  if(submitted)return; submitted=true; clearInterval(tick);
+  let c2=0; const lvStat={biet:[0,0],hieu:[0,0],vd:[0,0]};
+  exam2.forEach((q,i)=>{lvStat[q.lv][1]++; if(ans2[i]===q.a){c2++;lvStat[q.lv][0]++}});
+  let p3=0,c3=0;
+  exam3.forEach((q,i)=>{let k=0;q.s.forEach((s,j)=>{lvStat[TFLV[j]][1]++; if(ans3[i][j]===s.a){k++;lvStat[TFLV[j]][0]++}});c3+=k;p3+=tfPoint(k)});
+  const p2=c2*0.25, total=Math.round((p2+p3)*100)/100;
+  const used=50*60-timeLeft;
+  const cmt= total>=8?"Xuất sắc! Em nắm rất chắc chủ đề Lâm nghiệp 🌟":total>=6.5?"Khá tốt! Xem lại các câu sai để hoàn thiện nhé 👍":total>=5?"Đạt yêu cầu. Em cần ôn thêm phần vận dụng 📚":"Cần cố gắng hơn. Em đọc lại SGK và làm lại bài nhé 💪";
+  $("result").innerHTML=`<h2>Kết quả bài làm</h2>
+    <div class="sub">${esc(student.name)}${student.cls?" · Lớp "+esc(student.cls):""} · Thời gian: ${Math.floor(used/60)} phút ${used%60} giây</div>
+    <div class="score" style="margin-top:10px">${total.toFixed(2).replace(".",",")}<span style="font-size:20px">/10</span></div>
+    <div style="text-align:center;font-weight:600;margin-top:4px">${cmt}</div>
+    <div class="grid2"><div class="stat">Phần 2<b>${c2}/24 câu</b>${p2.toFixed(2).replace(".",",")} điểm</div>
+    <div class="stat">Phần 3<b>${c3}/16 ý</b>${p3.toFixed(2).replace(".",",")} điểm</div></div>
+    <table class="lv"><tr><th>Mức độ</th><th>Đúng / Tổng</th></tr>
+    ${Object.keys(lvStat).map(k=>`<tr><td>${LVNAME[k]}</td><td>${lvStat[k][0]}/${lvStat[k][1]}</td></tr>`).join("")}</table>
+    <div class="sub" style="margin-top:8px">Cách tính điểm: Phần 2 mỗi câu đúng 0,25 điểm. Phần 3 mỗi câu: đúng 1 ý = 0,1 · 2 ý = 0,25 · 3 ý = 0,5 · 4 ý = 1,0 điểm.</div>
+    <h2 style="margin-top:14px;font-size:16px">Bảng đáp án Phần 2</h2>
+    <div class="keygrid">${exam2.map((q,i)=>`<div class="${ans2[i]===q.a?'k-ok':'k-no'}">${i+1}.${"ABCD"[q.a]}</div>`).join("")}</div>
+    <h2 style="margin-top:12px;font-size:16px">Bảng đáp án Phần 3</h2>
+    <table class="lv"><tr><th>Câu</th><th>a</th><th>b</th><th>c</th><th>d</th><th>Điểm</th></tr>
+    ${exam3.map((q,i)=>{let k=0;const cells=q.s.map((s,j)=>{const ok=ans3[i][j]===s.a;if(ok)k++;
+      return `<td style="background:${ok?'#c8e6c9':'#ffcdd2'}">${s.a?'Đ':'S'}</td>`}).join("");
+      return `<tr><td>${i+1}</td>${cells}<td>${tfPoint(k).toString().replace(".",",")}</td></tr>`}).join("")}</table>
+    <div class="sub" style="margin-top:6px">Ô xanh: em làm đúng · Ô đỏ: em làm sai hoặc bỏ trống. Xem giải thích chi tiết bên dưới.</div>`;
+  show("s3"); showReview(2); if(total>=8)confetti();
+}
+function showReview(p){
+  $("rtab2").classList.toggle("on",p===2);$("rtab3").classList.toggle("on",p===3);
+  const L="ABCD";let h="";
+  if(p===2){
+    exam2.forEach((q,i)=>{const u=ans2[i];
+      h+=`<div class="card"><div class="qhead"><span class="qnum">Câu ${i+1} ${u===q.a?'✅':'❌'}</span><span><span class="badge ${LVCLS[q.lv]}">${LVNAME[q.lv]}</span><span class="pts ${u===q.a?'ok':'no'}">${u===q.a?'+0,25đ':'0đ'}</span></span></div>
+      <div class="stem">${esc(q.q)}</div>`+
+      q.o.map((o,j)=>`<div class="opt ${j===q.a?'right':(j===u?'wrong':'')}"><span class="L">${L[j]}</span><span>${esc(o)}</span></div>`).join("")+
+      `${u===null?'<div class="sub">Em chưa chọn đáp án.</div>':''}<div class="expl">💡 Đáp án ${L[q.a]}. ${esc(q.e)}</div></div>`});
+  }else{
+    exam3.forEach((q,i)=>{let k=0;
+      const items=q.s.map((s,j)=>{const u=ans3[i][j],ok=u===s.a;if(ok)k++;
+        return `<div class="st ${ok?'ok':'no'}"><div class="t"><b>${"abcd"[j]})</b> <span class="badge ${LVCLS[TFLV[j]]}">${LVNAME[TFLV[j]]}</span>${esc(s.t)}</div>
+        <div class="sub">Em chọn: <b>${u===null?'—':(u?'Đúng':'Sai')}</b> · Đáp án: <b>${s.a?'Đúng':'Sai'}</b> ${ok?'✅':'❌'}</div>
+        <div class="expl">💡 ${esc(s.e)}</div></div>`}).join("");
+      h+=`<div class="card"><div class="qhead"><span class="qnum">Câu ${i+1}</span><span class="pts ${k===4?'ok':(k?'':'no')}" style="${k&&k<4?'background:#fff3e0;color:#e65100':''}">${k}/4 ý đúng · ${tfPoint(k).toString().replace(".",",")}đ</span></div>
+      <div class="lead">${esc(q.lead)}</div>${items}</div>`});
+  }
+  $("review").innerHTML=h;
+}
+</script>
+</body>
+</html>
