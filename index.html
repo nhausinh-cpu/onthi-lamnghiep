@@ -110,6 +110,8 @@ table.lv td,table.lv th{border:1px solid var(--line);padding:6px;text-align:cent
 .keygrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px}
 .keygrid div{border-radius:8px;padding:5px 0;text-align:center;font-size:13px;font-weight:700}
 .keygrid .k-ok{background:#c8e6c9;color:#1b5e20}.keygrid .k-no{background:#ffcdd2;color:#b71c1c}
+.send{margin-top:10px;padding:8px 10px;border-radius:10px;font-size:14px;font-weight:600}
+.send.wait{background:#fff8e1;color:#795548}.send.ok{background:#e8f5e9;color:var(--green)}.send.err{background:#ffebee;color:var(--red)}
 .err-inline{color:var(--red);font-size:14px;margin:-6px 0 10px;min-height:20px}
 </style>
 </head>
@@ -498,6 +500,7 @@ function finish(){
   const cmt= total>=8?"Xuất sắc! Em nắm rất chắc chủ đề Lâm nghiệp 🌟":total>=6.5?"Khá tốt! Xem lại các câu sai để hoàn thiện nhé 👍":total>=5?"Đạt yêu cầu. Em cần ôn thêm phần vận dụng 📚":"Cần cố gắng hơn. Em đọc lại SGK và làm lại bài nhé 💪";
   $("result").innerHTML=`<h2>Kết quả bài làm</h2>
     <div class="sub">${esc(student.name)}${student.cls?" · Lớp "+esc(student.cls):""} · Thời gian: ${Math.floor(used/60)} phút ${used%60} giây</div>
+    <div id="sendStatus" class="send wait"></div>
     <div class="score" style="margin-top:10px">${total.toFixed(2).replace(".",",")}<span style="font-size:20px">/10</span></div>
     <div style="text-align:center;font-weight:600;margin-top:4px">${cmt}</div>
     <div class="grid2"><div class="stat">Phần 2<b>${c2}/24 câu</b>${p2.toFixed(2).replace(".",",")} điểm</div>
@@ -514,6 +517,22 @@ function finish(){
       return `<tr><td>${i+1}</td>${cells}<td>${tfPoint(k).toString().replace(".",",")}</td></tr>`}).join("")}</table>
     <div class="sub" style="margin-top:6px">Ô xanh: em làm đúng · Ô đỏ: em làm sai hoặc bỏ trống. Xem giải thích chi tiết bên dưới.</div>`;
   show("s3"); showReview(2); if(total>=8)confetti();
+  const sai2=[];exam2.forEach((q,i)=>{if(ans2[i]!==q.a)sai2.push(i+1)});
+  const sai3=[];exam3.forEach((q,i)=>q.s.forEach((s,j)=>{if(ans3[i][j]!==s.a)sai3.push((i+1)+"abcd"[j])}));
+  lastPayload={name:student.name,cls:student.cls,total:total,p2:p2,p3:Math.round(p3*100)/100,
+    c2:c2+"/24 câu",c3:c3+"/16 ý",biet:lvStat.biet[0]+"/"+lvStat.biet[1]+" đúng",hieu:lvStat.hieu[0]+"/"+lvStat.hieu[1]+" đúng",
+    vd:lvStat.vd[0]+"/"+lvStat.vd[1]+" đúng",time:Math.floor(used/60)+" phút "+(used%60)+" giây",
+    sai2:sai2.join(", ")||"Không",sai3:sai3.join(", ")||"Không"};
+  sendResult();
+}
+const SHEET_URL="https://script.google.com/macros/s/AKfycbz0W51MpGPS3AQXCDkmSs4uO4tx8mKz8-CtEGpkCfxC_5bpvoVtsya48dTlpHWICm3OCg/exec";
+let lastPayload=null;
+function sendResult(){
+  const st=$("sendStatus"); if(!st||!lastPayload)return;
+  st.className="send wait"; st.innerHTML="⏳ Đang gửi kết quả cho giáo viên...";
+  fetch(SHEET_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(lastPayload)})
+    .then(()=>{st.className="send ok";st.innerHTML="✅ Đã gửi kết quả cho giáo viên."})
+    .catch(()=>{st.className="send err";st.innerHTML='⚠️ Chưa gửi được kết quả (mạng yếu). <button class="btn" style="min-height:36px;padding:6px 12px;font-size:14px;margin-top:6px" onclick="sendResult()">Gửi lại</button><div style="font-size:13px;margin-top:4px">Nếu vẫn lỗi, em chụp màn hình trang này gửi thầy.</div>'});
 }
 function showReview(p){
   $("rtab2").classList.toggle("on",p===2);$("rtab3").classList.toggle("on",p===3);
