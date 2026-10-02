@@ -529,8 +529,8 @@ function makeExam(){
 let exam2=[],exam3=[],ans2=[],ans3=[],part=2,idx=0,timeLeft=EXAM.minutes*60,tick=null,submitted=false,started=0;
 function startQuiz(){
   openModal("📋 Quy chế làm bài",
-    '<div>Trong lúc làm bài, hệ thống <b>tự động ghi lại và gửi cho thầy</b>:</div>'+
-    '<div class="warnbox">• Rời khỏi bài (chuyển tab, mở app khác, thoát toàn màn hình)<br>• Sao chép, dán, bôi đen nội dung đề<br>• Bấm phím chụp màn hình (trên máy tính)</div>'+
+    '<div>Trong lúc làm bài, hệ thống <b>tự động ghi lại</b>:</div>'+
+    '<div class="warnbox">• Rời khỏi bài (chuyển tab, mở app khác, thoát toàn màn hình)<br>• Sao chép, dán, bôi đen nội dung đề<br>• Bấm phím chụp màn hình</div>'+
     '<div>Em làm bài trung thực, tự lực. Chúc em làm bài tốt!</div>',
     [{t:"Quay lại",c:"sec",f:closeModal},{t:"Bắt đầu làm bài",f:()=>{closeModal();batDauLamBai()}}]);
 }
@@ -604,7 +604,7 @@ const giamSat=(()=>{
   function canhBao(tieuDe,noiDung){
     if(!$("modal").classList.contains("hidden")){toast(tieuDe);return}
     const nut=[{t:"Tiếp tục làm bài",f:()=>{closeModal();if(fsCo()&&!fsEl())vaoFS()}}];
-    openModal(tieuDe,'<div class="warnbox">'+noiDung+'</div><div>Mọi lần vi phạm đều được <b>gửi kèm bài làm</b> cho thầy.</div>',nut);
+    openModal(tieuDe,'<div class="warnbox">'+noiDung+'</div>',nut);
   }
   function toast(t){const d=document.createElement("div");d.textContent=t;
     d.style.cssText="position:fixed;left:50%;top:64px;transform:translateX(-50%);background:#c62828;color:#fff;padding:8px 14px;border-radius:10px;z-index:200;font-weight:700;font-size:16px;max-width:90vw;text-align:center";
@@ -751,7 +751,7 @@ async function ktVao(code){
   const phut=Math.max(0,Math.round((r.han-r.now)/60000));
   openModal("📝 "+esc(r.ten),
     '<div>'+r.q2.length+' câu trắc nghiệm, '+r.q3.length+' câu Đúng/Sai · còn <b>'+phut+' phút</b>'+(r.tiepTuc?' <b>(làm tiếp bài đang dở)</b>':'')+'.</div>'+
-    '<div class="warnbox">• Đồng hồ <b>vẫn chạy</b> kể cả khi em thoát ra. Hết giờ máy tự nộp.<br>• Hệ thống ghi lại: rời khỏi bài, sao chép, dán, chụp màn hình (trên máy tính).<br>• Điểm hiện ngay sau khi nộp; đáp án mở sau giờ đóng bài.</div>'+
+    '<div class="warnbox">• Đồng hồ <b>vẫn chạy</b> kể cả khi em thoát ra. Hết giờ máy tự nộp.<br>• Hệ thống ghi lại: rời khỏi bài, sao chép, dán, chụp màn hình.<br>• Điểm hiện ngay sau khi nộp; đáp án mở sau giờ đóng bài.</div>'+
     '<div>Em làm bài trung thực, tự lực. Chúc em làm bài tốt!</div>',
     [{t:"Quay lại",c:"sec",f:closeModal},{t:r.tiepTuc?"Làm tiếp":"Bắt đầu",f:()=>{closeModal();batDauKT(r)}}]);
 }
