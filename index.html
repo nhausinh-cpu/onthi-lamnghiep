@@ -288,7 +288,7 @@ table.lv td:first-child{text-align:left}
 <!-- 3. LÀM BÀI -->
 <div id="s2" class="hidden">
   <div class="topbar"><span id="who">Bài làm</span><span class="mon" id="mon" title="Số lần rời khỏi bài làm">👁 0</span><span class="timer" id="timer">50:00</span></div>
-  <div class="wm" id="wm"></div>
+  
   <div class="wrap">
     <div class="tabs">
       <button class="tab on" id="tab2" onclick="showPart(2)">Trắc nghiệm</button>
@@ -641,7 +641,7 @@ const giamSat=(()=>{
   function hinhMo(){const p=PROFILE||{},txt=[student.name||p.name||"",p.email||"",student.cls||p.cls||""].filter(Boolean).join(" · ");
     let h="";for(let y=-1;y<14;y++)for(let x=-1;x<4;x++)h+='<div style="top:'+(y*110+(x%2)*55)+'px;left:'+(x*300-40)+'px">'+esc(txt)+'</div>';$("wm").innerHTML=h}
   return{
-    batDau(){window.onbeforeunload=e=>{e.preventDefault();e.returnValue="";return""};on=true;roi=giay=fs=copy=dan=chup=0;tRoi=0;badge();hinhMo();document.body.classList.add("exam-lock");vaoFS()},
+    batDau(){window.onbeforeunload=e=>{e.preventDefault();e.returnValue="";return""};on=true;roi=giay=fs=copy=dan=chup=0;tRoi=0;badge();document.body.classList.add("exam-lock");vaoFS()},
     ketThuc(){if(tRoi){const d=Date.now()-tRoi;if(!(loai==="blur"&&d<1500)){roi++;giay+=d/1000}tRoi=0}
       on=false;window.onbeforeunload=null;document.body.classList.remove("veil","exam-lock");raFS()},
     tomTat(){const a=[];
