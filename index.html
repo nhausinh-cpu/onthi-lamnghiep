@@ -163,6 +163,10 @@ table.lv td:first-child{text-align:left}
 .loading{text-align:center;padding:40px 0;color:var(--muted)}
 .credit{text-align:center;font-size:16px;color:var(--muted);padding:4px 16px 24px}
 .credit b{color:var(--green);font-weight:700}
+/* nút trang chủ */
+.homebtn{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--green);border:1.5px solid var(--line);border-radius:20px;padding:6px 14px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px}
+.homebtn.top{margin:0;padding:4px 10px;background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.35);flex:0 0 auto}
+.topbar #who{flex:1}
 /* bài kiểm tra */
 .ktrow{display:flex;gap:8px;margin-top:10px}.ktrow input{flex:1;min-width:0;text-transform:uppercase;letter-spacing:2px;font-weight:700}.ktrow .btn{flex:0 0 auto;padding-left:16px;padding-right:16px}
 .ktitem{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:10px}
@@ -249,6 +253,7 @@ table.lv td:first-child{text-align:left}
 
 <!-- 1. GẮP THÚ -->
 <div id="s1" class="wrap hidden">
+  <button class="homebtn" onclick="veTrangChu()">🏠 Trang chủ</button>
   <div class="card">
     <h2>Giải mã captcha 🧸</h2>
     <div class="sub">Bấm <b>GẮP</b> khi móc đứng ngay trên món đồ. Gắp <b>đúng thứ tự</b> mã bên dưới để mở khóa.</div>
@@ -276,6 +281,7 @@ table.lv td:first-child{text-align:left}
 
 <!-- 2. LÍ THUYẾT -->
 <div id="s1b" class="wrap hidden">
+  <button class="homebtn" onclick="veTrangChu()">🏠 Trang chủ</button>
   <div class="card">
     <h2>📖 Tóm tắt lí thuyết</h2>
     <div class="sub" id="thSub"></div>
@@ -287,7 +293,7 @@ table.lv td:first-child{text-align:left}
 
 <!-- 3. LÀM BÀI -->
 <div id="s2" class="hidden">
-  <div class="topbar"><span id="who">Bài làm</span><span class="mon" id="mon" title="Số lần rời khỏi bài làm">👁 0</span><span class="timer" id="timer">50:00</span></div>
+  <div class="topbar"><button class="homebtn top" onclick="veTrangChu()" aria-label="Về trang chủ">🏠</button><span id="who">Bài làm</span><span class="mon" id="mon" title="Số lần rời khỏi bài làm">👁 0</span><span class="timer" id="timer">50:00</span></div>
   
   <div class="wrap">
     <div class="tabs">
@@ -305,6 +311,7 @@ table.lv td:first-child{text-align:left}
 
 <!-- 4. KẾT QUẢ -->
 <div id="s3" class="wrap hidden">
+  <button class="homebtn" onclick="veTrangChu()">🏠 Trang chủ</button>
   <div class="card" id="result"></div>
   <div class="tabs" id="rtabs">
     <button class="tab on" id="rtab2" onclick="showReview(2)">Xem lại trắc nghiệm</button>
@@ -715,6 +722,22 @@ function showReview(p){
     h+='<div class="card"><div class="qhead"><span class="qnum">Câu '+(i+1)+'</span><span><span class="badge b-code">'+esc(q.id)+'</span><span class="pts '+(k===4?'ok':(k?'mid':'no'))+'">'+k+'/4 ý · '+vn(tfPoint(k))+'đ</span></span></div>'+
       '<div class="lead">'+rq(q.lead,q.img)+'</div>'+items+(q.e?'<div class="expl">💡 '+rich(q.e)+'</div>':'')+'</div>'});
   $("review").innerHTML=h;
+}
+
+/* =================== VỀ TRANG CHỦ =================== */
+function _veNha(){
+  clearInterval(tick);cancelAnimationFrame(raf);busy=false;
+  try{giamSat.ketThuc()}catch(e){}
+  closeModal();submitted=false;KT=null;timeLeft=EXAM.minutes*60;
+  show("s0");renderTopics();
+}
+function veTrangChu(){
+  const dangLam=!$("s2").classList.contains("hidden")&&!submitted;
+  if(!dangLam)return _veNha();
+  if(KT){ktLuuTam();openModal("Về trang chủ?","Bài kiểm tra <b>vẫn tính giờ</b>. Các câu em đã chọn được lưu lại; em vào mục <b>Bài kiểm tra → Làm tiếp</b> để làm tiếp trước khi hết giờ.",
+    [{t:"Ở lại làm bài",c:"sec",f:closeModal},{t:"Về trang chủ",f:_veNha}]);return}
+  openModal("Bỏ bài đang làm?","Em đang làm bài ôn tập. Về trang chủ thì <b>bài này sẽ bị huỷ</b>, không lưu kết quả.",
+    [{t:"Ở lại làm bài",c:"sec",f:closeModal},{t:"Về trang chủ",c:"danger",f:_veNha}]);
 }
 
 /* =================== BÀI KIỂM TRA =================== */
